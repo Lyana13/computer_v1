@@ -6,60 +6,77 @@ else
 function solveEquation(e){
 	let res;
 	res = parseEquation(e);
-	// console.log(res);
 	if ((typeof res) == "string") {
-		// console.log(res);
+		console.log(res);
 		return undefined;
 	}
 	var reduced = moveRightPart(res);
 	printReducedForm(reduced);
-	let degree = getDegree(reduced);
-	console.log("Polynomial degree: " + degree);
-	solverDiscriminant(reduced);
+	solveReducedEquation(reduced);
 	// console.log("LO", minus);
 };
 
 function getDegree(reduced){
 	let idx = reduced.length - 1;
-	while (reduced[idx] == 0)
-		// && idx <= 2
+	while (reduced[idx] == 0 && idx > 0)
 		idx--;
 	return idx;
 }
 
-function solverDiscriminant(reduced){
-	[c, b, a] = reduced;
+function solveSquareEquation(c, b, a){
 	let dis = (b * b) - (4 * a * c);
-	if (dis > 0){
-		console.log("Discriminant:", dis);
-		let x1 = (-b - Math.sqrt(dis)) / (2 * a);
-		let x2 = (-b + Math.sqrt(dis)) / (2 * a);
-		console.log("Discriminant is strictly positive, the two solutions are:");
-		console.log(x1.toFixed(6));
-		console.log(x2.toFixed(6));
+	console.log("Discriminant:", dis);
+		if (dis > 0){
+			let x1 = (-b - Math.sqrt(dis)) / (2 * a);
+			let x2 = (-b + Math.sqrt(dis)) / (2 * a);
+			console.log("Discriminant is strictly positive, the two solutions are:");
+			console.log(x1.toFixed(6));
+			console.log(x2.toFixed(6));
+		}
+		 else if (dis == 0){
+		 	let x0 = -b / (2*a);
+		 	console.log("Discriminant is strictly equal to zero.", x0);
+		}
+		else {
+			console.log("Discriminant is strictly negative, no real solution.");
 	}
-	 else if (dis == 0){
-	 	let x0 = -b / (2*a);
-	 	console.log("Discriminant is strictly equal to zero.", x0);
+}
+function solveLinearEquation(c, b){
+	let res = -c / b;
+	console.log("The solution is: ");
+	console.log(res.toFixed(6));
+}
+
+
+function solveReducedEquation(reduced){
+		[c, b, a] = reduced;
+	let degree = getDegree(reduced);
+	console.log("Polynomial degree: " + degree);
+	if (degree == 2){
+		 solveSquareEquation(c, b, a);
 	}
-	else if (dis < 0){
-		 console.log("Discriminant is strictly negative, no real solution.");
+	else if (degree == 1) {//линейное уравне а = 0
+		solveLinearEquation(c, b);
 	}
-	else
-	{
-		return ;
+	else if (degree == 0) {
+		if (c == 0)
+			console.log("Solution is any real number.");//если ним одинаковыцй с = 0 и 0 степень то решением если подставить в икс будет рано любое число 
+		else
+			console.log("There are no solutions.");
 	}
-	
 }
 
 function printReducedForm(reduced){
 	finalStr = reduced.map(function(num, idx) {
+		if (num == 0)
+			return "";
 		if (num >= 0 && idx != 0)
 			num = " + " + num;
 		else if (num < 0)
 			num = " - " + (num * -1);
 		return  num  + " * X^" + idx
 	}).join("");
+	finalStr = finalStr ? finalStr : "0";
 	console.log("Reduced form: " + finalStr + " = 0");	
 }
 
@@ -73,6 +90,8 @@ function parseEquation(e){
 	let left;
 	let right;
 
+	if (e.match(/X\^([3-9]|\d{2,})/g))
+		return "The polynomial degree is stricly greater than 2, I can't solve.";
 	e = e.replace(/\s/g, "");
 	[left, right] = e.split("=");
 	return [parsePart(left), parsePart(right)];
