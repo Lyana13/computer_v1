@@ -22,18 +22,34 @@ function solveEquation(e){
 function getDegree(reduced){
 	let idx = reduced.length - 1;
 	while (reduced[idx] == 0)
+		// && idx <= 2
 		idx--;
 	return idx;
 }
 
 function solverDiscriminant(reduced){
 	[c, b, a] = reduced;
-	let d = (b * b) - (4 * a * c);
-	console.log("d:", d);
-	let x1 = (-b + Math.sqrt(d)) / (2 * a);
-	let x2 = (-b - Math.sqrt(d)) / (2 * a);
-	console.log("x1:", x1);
-	console.log("x2:", x2);
+	let dis = (b * b) - (4 * a * c);
+	if (dis > 0){
+		console.log("Discriminant:", dis);
+		let x1 = (-b - Math.sqrt(dis)) / (2 * a);
+		let x2 = (-b + Math.sqrt(dis)) / (2 * a);
+		console.log("Discriminant is strictly positive, the two solutions are:");
+		console.log(x1.toFixed(6));
+		console.log(x2.toFixed(6));
+	}
+	 else if (dis == 0){
+	 	let x0 = -b / (2*a);
+	 	console.log("Discriminant is strictly equal to zero.", x0);
+	}
+	else if (dis < 0){
+		 console.log("Discriminant is strictly negative, no real solution.");
+	}
+	else
+	{
+		return ;
+	}
+	
 }
 
 function printReducedForm(reduced){
@@ -49,7 +65,6 @@ function printReducedForm(reduced){
 
 function moveRightPart(array){
 	[left, right] = array;
-	// console.log(array);
 	right = right.map(function(x) { return x * (-1); });
 	return left.map(function(num, idx) { return right[idx] + num; });
 }
