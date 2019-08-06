@@ -1,7 +1,7 @@
 if (process.argv[2] === undefined)
- console.log("Wrong number of arguments!");
+	console.log("Wrong number of arguments!");
 else
- solveEquation(process.argv[2]);
+	solveEquation(process.argv[2]);
 
 function solveEquation(e){
 	let res;
@@ -26,34 +26,45 @@ function getDegree(reduced){
 function solveSquareEquation(c, b, a){
 	let dis = (b * b) - (4 * a * c);
 	console.log("Discriminant:", dis);
-		if (dis > 0){
-			let x1 = (-b - Math.sqrt(dis)) / (2 * a);
-			let x2 = (-b + Math.sqrt(dis)) / (2 * a);
-			console.log("Discriminant is strictly positive, the two solutions are:");
-			console.log(x1.toFixed(6));
-			console.log(x2.toFixed(6));
-		}
-		 else if (dis == 0){
-		 	let x0 = -b / (2*a);
-		 	console.log("Discriminant is strictly equal to zero.", x0);
-		}
-		else {
-			console.log("Discriminant is strictly negative, no real solution.");
+	if (dis > 0){
+		let x1 = (-b - Math.sqrt(dis)) / (2 * a);
+		let x2 = (-b + Math.sqrt(dis)) / (2 * a);
+		console.log("Discriminant is strictly positive, the two solutions are:");
+		console.log(round(x1));
+		console.log(round(x2));
+	}
+	else if (dis == 0){
+	 	let x = -b / (2 * a);
+	 	console.log("Discriminant is strictly equal to zero, the solution is:");
+	 	console.log(round(x));
+	}
+	else {
+		let r = -b / (2 * a);
+		let ir = Math.sqrt(dis * -1) / (2 * a);
+		r = round(r);
+		ir = round(ir);
+		console.log("Discriminant is strictly negative, the two solutions are:");
+		console.log(r  + " + " + ir  + "i");
+		console.log(r  + " - " + ir  + "i");
 	}
 }
+
 function solveLinearEquation(c, b){
 	let res = -c / b;
 	console.log("The solution is: ");
-	console.log(res.toFixed(6));
+	console.log(round(res));
 }
 
+function round(num) {
+	return Math.round(num * 1000000) / 1000000;
+}
 
 function solveReducedEquation(reduced){
-		[c, b, a] = reduced;
+	[c, b, a] = reduced;
 	let degree = getDegree(reduced);
 	console.log("Polynomial degree: " + degree);
 	if (degree == 2){
-		 solveSquareEquation(c, b, a);
+		solveSquareEquation(c, b, a);
 	}
 	else if (degree == 1) {//линейное уравне а = 0
 		solveLinearEquation(c, b);
@@ -111,6 +122,10 @@ function parsePart(part){
 	return [c, b, a];
 }
 
+// X^0
+// eq.match(/([-,+]|^)\d+(\.\d+)?([-,+]|$)/g).map(x => Number(x.match(/[-,+]?\d+(\.\d+)?/)[0]))
+// eq.match(/([-,+]?\d+(\.\d+)?)\*X\^0/g).map(x => Number(x.match(/(.+)\*/)[1]))
+// eq.match(/([+,-]|^)X\^0/g).map(str => str[0] == '-' ? -1 : 1)
 
 //.match(/={2,}/g);-больше 1 раc(Two '=' signs in string")
 // part.match(/X\^([3-9]$|\d{2,}$)/g);
