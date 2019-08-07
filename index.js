@@ -110,9 +110,29 @@ function parseEquation(e){
 
 
 function matchDegree(part, deg) {
-	let regex = new RegExp("([-,+]?\\d+(\\.\\d+)?)\\*X\\^" + deg);
-	let num = part.match(regex);
- 	return num == null ? 0 : Number(num[1]);
+	let acc = [];
+	let res = part.replace(/[-,+]?\d+(\.\d+)?\*X\^\d+/g, "").match(/(\+|-|^)\d+(\.\d+)?/g);
+	if (res != null){
+		acc = acc.concat(res.map(x => Number(x)));
+	}
+	res = part.match(/([-,+]?\d+(\.\d+)?)\*X\^0/g);
+	if (res != null) {
+		acc = acc.concat(res.map(x => Number(x.match(/(.+)\*/)[1])));
+	}
+	res = part.match(/(\+|-|^)X\^0/g);
+	if (res != null) {
+		acc = acc.concat(res.map(x => x[0] == '-' ? -1 : 1));
+	}
+		console.log("chto-to", res, acc);
+	return acc.reduce((a, b) => a + b, 0);
+
+
+
+	// part = arraySum(part);
+	// console.log(part);
+	// let regex = new RegExp("([-,+]?\\d+(\\.\\d+)?)\\*X\\^" + deg);
+	// let num = part.match(regex);
+ // 	return num == null ? 0 : Number(num[1]);
 }
 
 function parsePart(part){
@@ -123,9 +143,9 @@ function parsePart(part){
 }
 
 // X^0
-// eq.match(/([-,+]|^)\d+(\.\d+)?([-,+]|$)/g).map(x => Number(x.match(/[-,+]?\d+(\.\d+)?/)[0]))
+// eq.replace(/[-,+]?\d+(\.\d+)?\*X\^\d+/g, "").match(/(\+|-|^)\d+(\.\d+)?/g).map(x => Number(x))
 // eq.match(/([-,+]?\d+(\.\d+)?)\*X\^0/g).map(x => Number(x.match(/(.+)\*/)[1]))
-// eq.match(/([+,-]|^)X\^0/g).map(str => str[0] == '-' ? -1 : 1)
+// eq.match(/(\+|-|^)X\^0/g).map(str => str[0] == '-' ? -1 : 1)
 
 //.match(/={2,}/g);-больше 1 раc(Two '=' signs in string")
 // part.match(/X\^([3-9]$|\d{2,}$)/g);
