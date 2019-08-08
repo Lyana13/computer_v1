@@ -112,27 +112,15 @@ function parseEquation(e){
 function matchDegree(part, deg) {
 	let res;
 	let acc = [];
+
+	res = part.match(new RegExp("([-,+]?\\d+(\\.\\d+)?)\\*X\\^" + deg, "g"));
+	acc = maybeConcat(acc, res, x => Number(x.match(/(.+)\*/)[1]));
+	res = part.match(new RegExp("(\\+|-|^)X\\^" + deg, "g"));
+	acc = maybeConcat(acc, res, x => x[0] == '-' ? -1 : 1);
 	if (deg == 0){
 		res = part.replace(/[-,+]?\d+(\.\d+)?\*X\^\d+/g, "").match(/(\+|-|^)\d+(\.\d+)?/g);
 		acc = maybeConcat(acc, res, x => Number(x));
-		res = part.match(/([-,+]?\d+(\.\d+)?)\*X\^0/g);
-		acc = maybeConcat(acc, res, x => Number(x.match(/(.+)\*/)[1]));
-		res = part.match(/(\+|-|^)X\^0/g);
-		acc = maybeConcat(acc, res, x => x[0] == '-' ? -1 : 1);
 	}
-	else if (deg == 1){
-		res = part.match(/([-,+]?\d+(\.\d+)?)\*X\^1/g);
-		acc = maybeConcat(acc, res, x => Number(x.match(/(.+)\*/)[1]));
-		res = part.match(/(\+|-|^)X\^1/g);
-		acc = maybeConcat(acc, res, x => x[0] == '-' ? -1 : 1);
-	}
-	else if (deg == 2){
-		res = part.match(/([-,+]?\d+(\.\d+)?)\*X\^2/g);
-		acc = maybeConcat(acc, res, x => Number(x.match(/(.+)\*/)[1]));
-		res = part.match(/(\+|-|^)X\^2/g);
-		acc = maybeConcat(acc, res, x => x[0] == '-' ? -1 : 1);
-	}
-	
 	console.log("chto-to", res, acc);
 	return acc.reduce((a, b) => a + b, 0);
 
@@ -142,6 +130,7 @@ function matchDegree(part, deg) {
 	// let num = part.match(regex);
  // 	return num == null ? 0 : Number(num[1]);
 }
+
 
 function maybeConcat(acc, res, cb){
 	if (res != null){
